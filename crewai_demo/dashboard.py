@@ -169,16 +169,27 @@ def run_agent(script_name: str) -> str:
             text=True,
             env=env,
             cwd=os.path.dirname(os.path.abspath(__file__)),
-            timeout=120
+            timeout=120,
+            errors='replace'  # Handle encoding issues
         )
-        output = result.stdout or ""
+        
+        # Combine stdout and stderr, filter out noise
+        all_output = []
+        
+        if result.stdout:
+            all_output.append(result.stdout)
+        
         if result.stderr:
-            # Filter out encoding warnings
-            stderr_lines = [line for line in result.stderr.split('\n') 
-                          if 'charmap' not in line and line.strip()]
-            if stderr_lines:
-                output = output + "\n\nWarnings:\n" + "\n".join(stderr_lines)
-        return output if output.strip() else "Agent completed with no output."
+            # Filter out encoding warnings and noise
+            useful_stderr = [line for line in result.stderr.split('\n') 
+                           if 'charmap' not in line 
+                           and 'CrewAIEventsBus' not in line
+                           and line.strip()]
+            if useful_stderr:
+                all_output.append("\n".join(useful_stderr))
+        
+        output = "\n".join(all_output)
+        return output.strip() if output.strip() else "Agent completed with no output."
     except subprocess.TimeoutExpired:
         return "ERROR: Agent timed out after 2 minutes."
     except Exception as e:
