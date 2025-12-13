@@ -498,46 +498,41 @@
                 </a>
             </div>
             
-            <!-- Agent Reminder Boxes -->
-            <div style="margin-top: 40px; display: flex; gap: 20px; max-width: 900px; margin-left: auto; margin-right: auto; flex-wrap: wrap; justify-content: center;">
-                
-                <!-- Email Reader Agent -->
-                <div style="flex: 1; min-width: 380px; padding: 20px; background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; border-radius: 8px; text-align: left;">
-                    <h3 style="color: #3b82f6; font-size: 18px; margin: 0 0 10px 0; font-family: 'Exo 2', sans-serif;">
-                        <i class="fa-solid fa-envelope-open-text"></i> EMAIL READER
-                    </h3>
-                    <p style="font-size: 14px; color: #94a3b8; margin: 0 0 12px 0;">
-                        Monitors inbox, filters spam, surfaces important emails.
-                    </p>
-                    <div style="background: #0f172a; padding: 10px 12px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: #22c55e;">
-                        python email_agent.py
-                    </div>
+            <!-- Dashboard Launch Box -->
+            <div style="margin-top: 40px; max-width: 700px; margin-left: auto; margin-right: auto; padding: 25px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15)); border: 2px solid #3b82f6; border-radius: 12px; text-align: center;">
+                <h3 style="color: #f8fafc; font-size: 22px; margin: 0 0 15px 0; font-family: 'Exo 2', sans-serif;">
+                    <i class="fa-solid fa-gauge-high"></i> CONTROL CENTER DASHBOARD
+                </h3>
+                <p style="font-size: 16px; color: #cbd5e1; margin: 0 0 20px 0;">
+                    Web UI to run agents with one click. No command line needed.
+                </p>
+                <div style="background: #0f172a; padding: 15px 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; color: #22c55e; text-align: left; display: inline-block;">
+                    <span style="color: #64748b;"># Step 1: Open terminal, navigate to folder</span><br>
+                    cd C:\engineroom\crewai_demo<br><br>
+                    <span style="color: #64748b;"># Step 2: Launch dashboard</span><br>
+                    python -m streamlit run dashboard.py<br><br>
+                    <span style="color: #64748b;"># Step 3: Open in browser</span><br>
+                    <span style="color: #3b82f6;">http://localhost:8501</span>
                 </div>
-                
-                <!-- Email Reply Agent -->
-                <div style="flex: 1; min-width: 380px; padding: 20px; background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; border-radius: 8px; text-align: left;">
-                    <h3 style="color: #8b5cf6; font-size: 18px; margin: 0 0 10px 0; font-family: 'Exo 2', sans-serif;">
-                        <i class="fa-solid fa-reply"></i> EMAIL REPLIER
-                    </h3>
-                    <p style="font-size: 14px; color: #94a3b8; margin: 0 0 12px 0;">
-                        Drafts replies in Leonard's voice. Security filters block scams.
-                    </p>
-                    <div style="background: #0f172a; padding: 10px 12px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: #22c55e;">
-                        python email_reply_agent.py
-                    </div>
-                </div>
-                
             </div>
             
-            <!-- Common Setup -->
-            <div style="margin-top: 20px; max-width: 900px; margin-left: auto; margin-right: auto;">
-                <p style="font-size: 13px; color: #64748b; text-align: center;">
-                    <i class="fa-solid fa-terminal"></i> Run from: <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px; color: #94a3b8;">C:\engineroom\crewai_demo</code> 
-                    &nbsp;|&nbsp; 
-                    <i class="fa-solid fa-key"></i> Set: <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px; color: #94a3b8;">$env:GOOGLE_API_KEY</code>
-                    &nbsp;|&nbsp;
-                    <i class="fa-solid fa-microchip"></i> Gemini 3 Pro
-                </p>
+            <!-- Agent Cards -->
+            <div style="margin-top: 25px; display: flex; gap: 15px; max-width: 700px; margin-left: auto; margin-right: auto; flex-wrap: wrap; justify-content: center;">
+                <div style="flex: 1; min-width: 200px; padding: 15px; background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; border-radius: 8px; text-align: center;">
+                    <i class="fa-solid fa-envelope-open-text" style="color: #3b82f6; font-size: 24px;"></i>
+                    <p style="color: #f8fafc; margin: 10px 0 5px 0; font-weight: 600;">Email Reader</p>
+                    <p style="color: #64748b; font-size: 12px; margin: 0;">Filters & prioritizes inbox</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; padding: 15px; background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; border-radius: 8px; text-align: center;">
+                    <i class="fa-solid fa-reply" style="color: #8b5cf6; font-size: 24px;"></i>
+                    <p style="color: #f8fafc; margin: 10px 0 5px 0; font-weight: 600;">Email Replier</p>
+                    <p style="color: #64748b; font-size: 12px; margin: 0;">Drafts secure responses</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; padding: 15px; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; border-radius: 8px; text-align: center;">
+                    <i class="fa-solid fa-microchip" style="color: #22c55e; font-size: 24px;"></i>
+                    <p style="color: #f8fafc; margin: 10px 0 5px 0; font-weight: 600;">Gemini 3 Pro</p>
+                    <p style="color: #64748b; font-size: 12px; margin: 0;">Latest Google AI model</p>
+                </div>
             </div>
             
             <p style="margin-top: 30px; font-size: 18px; color: #64748b;">
