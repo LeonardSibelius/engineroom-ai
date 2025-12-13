@@ -171,14 +171,14 @@ def run_agent(script_name: str) -> str:
             cwd=os.path.dirname(os.path.abspath(__file__)),
             timeout=120
         )
-        output = result.stdout
+        output = result.stdout or ""
         if result.stderr:
             # Filter out encoding warnings
             stderr_lines = [line for line in result.stderr.split('\n') 
                           if 'charmap' not in line and line.strip()]
             if stderr_lines:
-                output += "\n\nWarnings:\n" + "\n".join(stderr_lines)
-        return output if output else "Agent completed with no output."
+                output = output + "\n\nWarnings:\n" + "\n".join(stderr_lines)
+        return output if output.strip() else "Agent completed with no output."
     except subprocess.TimeoutExpired:
         return "ERROR: Agent timed out after 2 minutes."
     except Exception as e:
