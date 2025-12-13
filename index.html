@@ -498,21 +498,45 @@
                 </a>
             </div>
             
-            <!-- Agent Reminder Box -->
-            <div style="margin-top: 40px; padding: 25px; background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; border-radius: 8px; text-align: left; max-width: 700px; margin-left: auto; margin-right: auto;">
-                <h3 style="color: #3b82f6; font-size: 20px; margin: 0 0 15px 0; font-family: 'Exo 2', sans-serif;">
-                    <i class="fa-solid fa-robot"></i> EMAIL AGENT: Chief of Staff
-                </h3>
-                <p style="font-size: 16px; color: #94a3b8; margin: 0 0 15px 0;">
-                    The agent monitors wpneural@gmail.com, filters spam, and surfaces important emails.
-                </p>
-                <div style="background: #0f172a; padding: 12px 15px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 14px; color: #22c55e;">
-                    cd C:\engineroom\crewai_demo<br>
-                    $env:GOOGLE_API_KEY="[YOUR_KEY]"<br>
-                    python email_agent.py
+            <!-- Agent Reminder Boxes -->
+            <div style="margin-top: 40px; display: flex; gap: 20px; max-width: 900px; margin-left: auto; margin-right: auto; flex-wrap: wrap; justify-content: center;">
+                
+                <!-- Email Reader Agent -->
+                <div style="flex: 1; min-width: 380px; padding: 20px; background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; border-radius: 8px; text-align: left;">
+                    <h3 style="color: #3b82f6; font-size: 18px; margin: 0 0 10px 0; font-family: 'Exo 2', sans-serif;">
+                        <i class="fa-solid fa-envelope-open-text"></i> EMAIL READER
+                    </h3>
+                    <p style="font-size: 14px; color: #94a3b8; margin: 0 0 12px 0;">
+                        Monitors inbox, filters spam, surfaces important emails.
+                    </p>
+                    <div style="background: #0f172a; padding: 10px 12px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: #22c55e;">
+                        python email_agent.py
+                    </div>
                 </div>
-                <p style="font-size: 14px; color: #64748b; margin: 15px 0 0 0;">
-                    <i class="fa-solid fa-folder"></i> Logs: Check terminal output for filtered results
+                
+                <!-- Email Reply Agent -->
+                <div style="flex: 1; min-width: 380px; padding: 20px; background: rgba(139, 92, 246, 0.1); border: 1px solid #8b5cf6; border-radius: 8px; text-align: left;">
+                    <h3 style="color: #8b5cf6; font-size: 18px; margin: 0 0 10px 0; font-family: 'Exo 2', sans-serif;">
+                        <i class="fa-solid fa-reply"></i> EMAIL REPLIER
+                    </h3>
+                    <p style="font-size: 14px; color: #94a3b8; margin: 0 0 12px 0;">
+                        Drafts replies in Leonard's voice. Security filters block scams.
+                    </p>
+                    <div style="background: #0f172a; padding: 10px 12px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; color: #22c55e;">
+                        python email_reply_agent.py
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Common Setup -->
+            <div style="margin-top: 20px; max-width: 900px; margin-left: auto; margin-right: auto;">
+                <p style="font-size: 13px; color: #64748b; text-align: center;">
+                    <i class="fa-solid fa-terminal"></i> Run from: <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px; color: #94a3b8;">C:\engineroom\crewai_demo</code> 
+                    &nbsp;|&nbsp; 
+                    <i class="fa-solid fa-key"></i> Set: <code style="background: #1e293b; padding: 2px 6px; border-radius: 3px; color: #94a3b8;">$env:GOOGLE_API_KEY</code>
+                    &nbsp;|&nbsp;
+                    <i class="fa-solid fa-microchip"></i> Gemini 3 Pro
                 </p>
             </div>
             
