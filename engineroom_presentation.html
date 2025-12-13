@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Engine Room - Powered by Google ADK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Rajdhani:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. THE SETUP */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f172a;
+            /* Dark Slate Background */
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px 0;
+            place-items: center;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .slide-container {
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+            /* Blue glow */
+            display: flex;
+            flex-direction: column;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+        }
+
+        /* 1.1 BACKGROUND STYLING */
+
+        .slide-container::before {
+            content: '';
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 0;
+            background-image: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+        }
+
+        .slide-container>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. CONSISTENT TYPOGRAPHY */
+
+        /* Headings Font - Sci-Fi / Tech feel */
+
+        .slide-container h1,
+        .slide-container h2,
+        .slide-container h3 {
+            color: #f8fafc;
+            font-family: 'Exo 2', sans-serif;
+            /* Futuristic Header Font */
+            font-weight: 700;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Accent Colors */
+        .text-accent {
+            color: #3b82f6;
+            /* Google Blue / Neon Blue */
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            /* Blue to Purple */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Body Text Font */
+
+        .slide-container p,
+        .slide-container li,
+        .slide-container .subtitle {
+            color: #cbd5e1;
+            /* Light Grey */
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 24px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Consistent Font Sizes */
+
+        .slide-container h1 {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .slide-container .slide-title {
+            font-size: 48px;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 20px;
+        }
+
+        .slide-container h3 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #3b82f6;
+        }
+
+        .slide-container .content-area {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* 3. LAYOUT DEFINITIONS */
+
+        .title-layout {
+            text-align: center;
+            z-index: 2;
+        }
+
+        /* Image on Title Slide */
+        .title-layout img.hero-image {
+            width: 600px;
+            height: 400px;
+            object-fit: cover;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            border: 2px solid #3b82f6;
+        }
+
+
+        .two-column {
+            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .image-wrapper {
+            border-radius: 12px;
+            height: 100%;
+            max-height: 450px;
+            overflow: hidden;
+            width: 100%;
+            border: 1px solid #475569;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1e293b;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+        /* Bleed Content Layout */
+        .slide-container.bleed-content-layout {
+            display: grid;
+            gap: 0;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding: 0;
+            align-items: stretch;
+        }
+
+        .slide-container.bleed-content-layout>.content-container {
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .slide-container.bleed-content-layout>.visual-container {
+            height: 100%;
+            width: 100%;
+            background-color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .slide-container.bleed-content-layout>.visual-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Tiled Content */
+
+        .tiled-content {
+            align-items: stretch;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .tile {
+            align-items: center;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+        }
+
+        .tile .icon {
+            color: #3b82f6;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Full Background Image Overlay */
+        .full-bg-image {
+            background-position: center;
+            background-size: cover;
+            position: relative;
+            background-color: #1e293b;
+        }
+
+        .full-bg-image .content-overlay {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 1000px;
+            padding: 60px;
+            width: 100%;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            /* Slightly darker for readability */
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
+        }
+
+        .full-bg-image h2 {
+            font-size: 80px;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            margin-bottom: 20px;
+        }
+
+        /* Timeline */
+        .timeline-layout {
+            align-items: stretch;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        .timeline-line {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            height: 4px;
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            z-index: 0;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .timeline-item {
+            position: relative;
+            text-align: center;
+            width: 30%;
+            z-index: 1;
+        }
+
+        .timeline-dot {
+            background-color: #0f172a;
+            border: 4px solid #3b82f6;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.8);
+        }
+
+        .timeline-content {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-top: 0;
+            margin-bottom: 30px;
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Slide 1: Title Slide (The Brand) -->
+    <div class="slide-container" id="slide1">
+        <div class="title-layout">
+            <img class="hero-image" src="images/engineroom.jpg" alt="Gleaming fusion reactor with stylized ER plasma">
+            <h1>THE ENGINE ROOM</h1>
+            <p class="subtitle">AI Process Automation & Workflow Orchestration</p>
+            <p style="color: #3b82f6; margin-top: 20px; font-weight: 700;">POWERED BY GOOGLE ADK & GEMINI 3 PRO</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Vision (Global Conquest) -->
+    <div class="slide-container full-bg-image" id="slide2" style="background-image: url('images/earth.jpg');">
+        <div class="content-overlay">
+            <h2>GLOBAL SCALE</h2>
+            <p class="subtitle" style="color: #fff; font-size: 32px;">We don't just write code. We orchestrate
+                intelligence that spans the globe.</p>
+        </div>
+    </div>
+
+    <!-- Slide 3: The Problem (Human Bottleneck) -->
+    <div class="slide-container bleed-content-layout" id="slide3">
+        <div class="content-container">
+            <h2>THE HUMAN BOTTLENECK</h2>
+            <p>In a world of infinite data, human processing is the limiting factor.</p>
+            <p>Manual workflows, legacy debt, and slow decision-making are stalling your engine.</p>
+            <p class="text-accent">It's time to remove the friction.</p>
+        </div>
+        <div class="visual-container">
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/10078532635552179362"
+                alt="Digital Flow Abstract">
+        </div>
+    </div>
+
+    <!-- Slide 4: The Solution (Tech Stack) -->
+    <div class="slide-container" id="slide4">
+        <h2 class="slide-title">THE POWER SOURCE</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <h3 class="text-gradient">Gemini 3 Pro + Google ADK</h3>
+                    <p>We harness the raw reasoning power of Google's most advanced model, <strong>Gemini 3
+                            Pro</strong>.</p>
+                    <p>Built on the <strong>Agent Development Kit (ADK)</strong>, our systems are not just chatbots—they
+                        are autonomous, auditable, and secure enterprise workers.</p>
+                </div>
+                <div class="image-wrapper">
+                    <img src="https://drive.google.com/uc?export=view&id=1nZt1o3675zpA-j2HXJp_mIe5wYUYseJ9"
+                        alt="Fusion Core Abstract">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Methodology (Orchestration) -->
+    <div class="slide-container bleed-content-layout" id="slide5">
+        <div class="visual-container">
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/10078532635552179362"
+                alt="Orchestration Abstract">
+        </div>
+        <div class="content-container">
+            <h2>ORCHESTRATION</h2>
+            <p>We build <strong>Multi-Agent Systems (MAS)</strong>.</p>
+            <p>Instead of one overworked script, we deploy a team: A <strong>Planner</strong> to strategize, a
+                <strong>Worker</strong> to execute, and a <strong>Reviewer</strong> to validate.
+            </p>
+            <p class="text-accent">Precision through collaboration.</p>
+        </div>
+    </div>
+
+    <!-- Slide 6: Service 1 (Legacy Integration) -->
+    <div class="slide-container" id="slide6">
+        <h2 class="slide-title">LEGACY INTEGRATION</h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="image-wrapper">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/10078532635552179362"
+                        alt="Legacy Bridge Abstract">
+                </div>
+                <div>
+                    <h3>Bridge the Gap</h3>
+                    <p>Your archaic databases and legacy systems are gold mines trapped in stone.</p>
+                    <p>Our agents connect directly to your old infrastructure (Sybase, Mainframes) and seamlessly pipe
+                        structured data into modern cloud platforms like Salesforce.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Service 2 (Document Processing) -->
+    <div class="slide-container bleed-content-layout" id="slide7">
+        <div class="content-container">
+            <h2>INTELLIGENT DOCS</h2>
+            <p><strong>Stop typing. Start processing.</strong></p>
+            <p>Our Intelligent Document Processing (IDP) agents read invoices, claims, and contracts with near-human
+                comprehension, extracting data instantly.</p>
+        </div>
+        <div class="visual-container">
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/10078532635552179362"
+                alt="Document Processing Abstract">
+        </div>
+    </div>
+
+    <!-- Slide 8: Service 3 (Autonomous Workflows) -->
+    <div class="slide-container full-bg-image" id="slide8"
+        style="background-image: url('https://drive.google.com/uc?export=view&id=1-KNKm7IRSK2nv2TWIMmILRdCCVhyBnuw');">
+        <div class="content-overlay">
+            <h2>BUSINESS ON AUTOPILOT</h2>
+            <p class="subtitle">End-to-end autonomous workflows that run 24/7/365.</p>
+        </div>
+    </div>
+
+    <!-- Slide 9: Why Google ADK? -->
+    <div class="slide-container" id="slide9">
+        <h2 class="slide-title">WHY GOOGLE ADK?</h2>
+        <div class="content-area">
+            <div class="tiled-content">
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>Reliability</h3>
+                    <p>Structured graph-based orchestration ensures agents never get stuck in infinite loops.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-file-contract"></i></div>
+                    <h3>Auditability</h3>
+                    <p>Every decision, thought, and action is logged. Complete transparency for compliance.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>Scalability</h3>
+                    <p>Built on Vertex AI to scale from one agent to a global fleet instantly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: The Process -->
+    <div class="slide-container" id="slide10">
+        <h2 class="slide-title">DEPLOYMENT TIMELINE</h2>
+        <div class="content-area">
+            <div class="timeline-layout">
+                <div class="timeline-line"></div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>ARCHITECT</h3>
+                        <p>We map your bottlenecks.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>ORCHESTRATE</h3>
+                        <p>We build the Agent Team.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>DEPLOY</h3>
+                        <p>Vertex AI Activation.</p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: The Future -->
+        <div class="slide-container" id="slide11">
+            <div class="title-layout">
+                <h1 class="text-gradient" style="font-size: 100px;">THE FUTURE IS<br>AUTONOMOUS</h1>
+                <p class="subtitle">Join the revolution. Eliminate the bottleneck.</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Contact -->
+        <div class="slide-container" id="slide12">
+            <div class="title-layout">
+                <img class="hero-image" src="images/engineroom_hero.jpg" alt="The Engine Room Logo">
+                <h2>START YOUR ENGINE</h2>
+                <div style="margin-top: 40px; font-size: 28px;">
+                    <p><i class="fa-solid fa-globe text-accent"></i> www.engineroom-ai.com</p>
+                    <p><i class="fa-solid fa-envelope text-accent"></i> contact@engineroom-ai.com</p>
+                </div>
+            </div>
+        </div>
+
+</body>
+
+</html>
