@@ -71,3 +71,4 @@ node_modules/
 # CrewAI secrets - never push these
 crewai_demo/token.json
 crewai_demo/credentials.json
+crewai_demo/.env

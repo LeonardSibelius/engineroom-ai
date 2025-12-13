@@ -3,6 +3,10 @@ import subprocess
 import os
 import sys
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load API key from .env file if it exists
+load_dotenv()
 
 # ============================================================================
 # PAGE CONFIG - Must be first Streamlit command
@@ -188,6 +192,11 @@ def run_agent(script_name: str) -> str:
 with st.sidebar:
     st.markdown("### ⚙️ Configuration")
     
+    # Try to get API key from environment (.env file) or session state
+    default_key = os.environ.get("GOOGLE_API_KEY", "")
+    if "api_key" not in st.session_state and default_key:
+        st.session_state.api_key = default_key
+    
     # API Key input (password field)
     api_key = st.text_input(
         "Google API Key",
@@ -197,6 +206,10 @@ with st.sidebar:
     )
     if api_key:
         st.session_state.api_key = api_key
+    
+    # Show if loaded from .env
+    if default_key:
+        st.caption("✅ Loaded from .env file")
     
     st.markdown("---")
     
