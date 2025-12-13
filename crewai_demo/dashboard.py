@@ -161,6 +161,7 @@ def run_agent(script_name: str) -> str:
     env["GOOGLE_API_KEY"] = st.session_state.api_key
     env["GEMINI_API_KEY"] = st.session_state.api_key
     env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONLEGACYWINDOWSSTDIO"] = "1"
     
     try:
         result = subprocess.run(
@@ -189,6 +190,14 @@ def run_agent(script_name: str) -> str:
                 all_output.append("\n".join(useful_stderr))
         
         output = "\n".join(all_output)
+        
+        # Clean up garbled box-drawing characters
+        import re
+        output = re.sub(r'[â€™""¦¢]+', '', output)  # Remove garbled chars
+        output = re.sub(r'\s*\|\s*', ' | ', output)  # Clean up pipes
+        output = re.sub(r'\n{3,}', '\n\n', output)  # Remove excessive newlines
+        output = re.sub(r'^\s*\|\s*$', '', output, flags=re.MULTILINE)  # Remove lone pipes
+        
         return output.strip() if output.strip() else "Agent completed with no output."
     except subprocess.TimeoutExpired:
         return "ERROR: Agent timed out after 2 minutes."
