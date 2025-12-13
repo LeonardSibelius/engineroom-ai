@@ -12,7 +12,7 @@ os.environ["GEMINI_API_KEY"] = os.environ["GOOGLE_API_KEY"]
 
 # Define the model string (LiteLLM format: provider/model)
 # Using "gemini/gemini-pro" as it is the most stable identifier
-my_llm = "gemini/gemini-2.0-flash"
+my_llm = "gemini/gemini-3-pro-preview"
 
 # 1. Define Agents
 researcher = Agent(

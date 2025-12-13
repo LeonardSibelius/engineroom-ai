@@ -84,7 +84,7 @@ email_handler = Agent(
     verbose=True,
     allow_delegation=False,
     tools=[gmail_tool],
-    llm="gemini/gemini-2.0-flash"
+    llm="gemini/gemini-3-pro-preview"
 )
 
 # Define the Task
