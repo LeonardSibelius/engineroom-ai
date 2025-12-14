@@ -176,7 +176,7 @@ def run_agent(script_name: str, args: list = None) -> str:
             text=True,
             env=env,
             cwd=os.path.dirname(os.path.abspath(__file__)),
-            timeout=120,
+            timeout=600,  # 10 minutes - let the agent think deeply
             errors='replace'  # Handle encoding issues
         )
         
