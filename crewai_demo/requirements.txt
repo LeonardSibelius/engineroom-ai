@@ -3,3 +3,5 @@ langchain-google-genai
 litellm
 crewai-tools
 langchain-google-community[gmail]
+chromadb
+pymupdf

@@ -49,7 +49,39 @@ python email_reply_agent.py
 
 ---
 
-## 3. Research Crew (Demo)
+## 3. Topic Expert Agent
+**File:** `crewai_demo/topic_expert_agent.py`
+
+**Role:** Historical Evidence Analyst for Leonard Sibelius
+
+**Purpose:**
+- Creates educational content from ingested books
+- Uses RAG (Retrieval Augmented Generation) to search knowledge base
+- Provides sourced, factual responses for debates
+- Counter-extremism education mission
+
+**How to Run:**
+```powershell
+# Interactive mode
+python topic_expert_agent.py
+
+# Command line mode
+python topic_expert_agent.py "historical patterns of conquest"
+```
+
+**Output:** Researched, cited content formatted for social media.
+
+**Knowledge Base:**
+- Books are stored in `crewai_demo/books/` as PDFs
+- Run `python ingest_books.py` to index new books
+- Database stored in `crewai_demo/knowledge_db/`
+
+**Current Sources:**
+- "The History of Jihad" by Robert Spencer (449 pages, 1,235 chunks)
+
+---
+
+## 4. Research Crew (Demo)
 **File:** `crewai_demo/hello_crew.py`
 
 **Purpose:** Demo/test of multi-agent collaboration.

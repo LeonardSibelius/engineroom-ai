@@ -249,6 +249,14 @@ with st.sidebar:
         st.markdown("❌ **Gmail:** Not authenticated")
         st.caption("Run `python setup_gmail_token.py` in terminal")
     
+    # Knowledge base status
+    knowledge_db = Path(__file__).parent / "knowledge_db"
+    if knowledge_db.exists():
+        st.markdown("✅ **Knowledge Base:** Ready")
+    else:
+        st.markdown("⚠️ **Knowledge Base:** Not built")
+        st.caption("Run `python ingest_books.py` in terminal")
+    
     st.markdown("---")
     
     # Model info
@@ -275,7 +283,7 @@ st.markdown('<p class="subtitle">AI Agent Control Center</p>', unsafe_allow_html
 st.markdown("---")
 
 # Agent Cards in columns
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 # Email Reader Agent
 with col1:
@@ -283,8 +291,8 @@ with col1:
     <div class="agent-card reader">
         <h3>📨 Email Reader</h3>
         <p style="color: #94a3b8;">Chief of Staff</p>
-        <p style="color: #cbd5e1; font-size: 0.9rem;">
-            Monitors your inbox, filters spam and scams, surfaces important emails that need your attention.
+        <p style="color: #cbd5e1; font-size: 0.85rem;">
+            Monitors inbox, filters spam, surfaces important emails.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -300,8 +308,8 @@ with col2:
     <div class="agent-card replier">
         <h3>✉️ Email Replier</h3>
         <p style="color: #94a3b8;">Executive Communications</p>
-        <p style="color: #cbd5e1; font-size: 0.9rem;">
-            Drafts professional replies in Leonard's voice. Security filters block scams. Saves to Gmail Drafts.
+        <p style="color: #cbd5e1; font-size: 0.85rem;">
+            Drafts replies in Leonard's voice. Security filters block scams.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -311,13 +319,35 @@ with col2:
             st.session_state.replier_output = run_agent("email_reply_agent.py")
             st.session_state.replier_time = datetime.now().strftime("%H:%M:%S")
 
+# Topic Expert Agent
+with col3:
+    st.markdown("""
+    <div class="agent-card" style="border-left: 4px solid #22c55e;">
+        <h3>📚 Topic Expert</h3>
+        <p style="color: #94a3b8;">Historical Evidence Analyst</p>
+        <p style="color: #cbd5e1; font-size: 0.85rem;">
+            Creates educational content from historical sources.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    topic_input = st.text_input("Topic:", placeholder="e.g., patterns of conquest", key="topic_input")
+    
+    if st.button("🚀 Research Topic", key="run_expert", use_container_width=True):
+        if topic_input:
+            with st.spinner("Agent is researching..."):
+                st.session_state.expert_output = run_agent(f'topic_expert_agent.py "{topic_input}"')
+                st.session_state.expert_time = datetime.now().strftime("%H:%M:%S")
+        else:
+            st.warning("Please enter a topic first.")
+
 st.markdown("---")
 
 # Output Section
 st.markdown("### 📟 Agent Output")
 
 # Tabs for different outputs
-tab1, tab2 = st.tabs(["📨 Reader Output", "✉️ Replier Output"])
+tab1, tab2, tab3 = st.tabs(["📨 Reader Output", "✉️ Replier Output", "📚 Expert Output"])
 
 with tab1:
     if "reader_output" in st.session_state:
@@ -334,6 +364,14 @@ with tab2:
                    unsafe_allow_html=True)
     else:
         st.info("Click 'Run Email Replier' to see output here.")
+
+with tab3:
+    if "expert_output" in st.session_state:
+        st.caption(f"Last run: {st.session_state.get('expert_time', 'Unknown')}")
+        st.markdown(f'<div class="terminal-output">{st.session_state.expert_output}</div>', 
+                   unsafe_allow_html=True)
+    else:
+        st.info("Enter a topic and click 'Research Topic' to see output here.")
 
 # Footer
 st.markdown("---")

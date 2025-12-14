@@ -72,3 +72,9 @@ node_modules/
 crewai_demo/token.json
 crewai_demo/credentials.json
 crewai_demo/.env
+
+# Knowledge base - generated from PDFs (run python ingest_books.py to rebuild)
+crewai_demo/knowledge_db/
+
+# PDF books (too large for git)
+crewai_demo/books/
