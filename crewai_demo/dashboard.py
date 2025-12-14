@@ -3,6 +3,7 @@ import subprocess
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 from dotenv import load_dotenv
 
 # Load API key from .env file if it exists
