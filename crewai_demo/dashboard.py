@@ -153,7 +153,7 @@ def check_gmail_token():
     """Check if Gmail token exists."""
     return os.path.exists("token.json")
 
-def run_agent(script_name: str) -> str:
+def run_agent(script_name: str, args: list = None) -> str:
     """Run an agent script and capture output."""
     if not check_api_key():
         return "ERROR: API key not configured. Please enter it in the sidebar."
@@ -164,9 +164,14 @@ def run_agent(script_name: str) -> str:
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONLEGACYWINDOWSSTDIO"] = "1"
     
+    # Build command list
+    cmd = [sys.executable, script_name]
+    if args:
+        cmd.extend(args)
+    
     try:
         result = subprocess.run(
-            [sys.executable, script_name],
+            cmd,
             capture_output=True,
             text=True,
             env=env,
@@ -192,12 +197,21 @@ def run_agent(script_name: str) -> str:
         
         output = "\n".join(all_output)
         
-        # Clean up garbled box-drawing characters
+        # Clean up output
         import re
-        output = re.sub(r'[â€™""¦¢]+', '', output)  # Remove garbled chars
-        output = re.sub(r'\s*\|\s*', ' | ', output)  # Clean up pipes
+        
+        # Try to extract just the RESULT section (cleanest output)
+        result_match = re.search(r'={50,}\s*\nRESULT:\s*\n={50,}\s*\n(.+?)(?:={50,}|$)', output, re.DOTALL)
+        if result_match:
+            output = result_match.group(1).strip()
+        
+        # Remove garbled box-drawing characters and other noise
+        output = re.sub(r'[""¦¢Œ˜œ‚ï¸�]+', '', output)  # Remove garbled chars
+        output = re.sub(r'ðŸ[^\s]*', '', output)  # Remove broken emoji codes
+        output = re.sub(r'š"[^\s]*', '', output)  # Remove more broken codes
+        output = re.sub(r'\s*\|\s*', ' ', output)  # Remove pipes
         output = re.sub(r'\n{3,}', '\n\n', output)  # Remove excessive newlines
-        output = re.sub(r'^\s*\|\s*$', '', output, flags=re.MULTILINE)  # Remove lone pipes
+        output = re.sub(r'^\s*$', '', output, flags=re.MULTILINE)  # Remove blank lines
         
         return output.strip() if output.strip() else "Agent completed with no output."
     except subprocess.TimeoutExpired:
@@ -337,7 +351,7 @@ with col3:
     if st.button("🚀 Research Topic", key="run_expert", use_container_width=True):
         if topic_input:
             with st.spinner("Agent is researching..."):
-                st.session_state.expert_output = run_agent(f'topic_expert_agent.py "{topic_input}"')
+                st.session_state.expert_output = run_agent("topic_expert_agent.py", [topic_input])
                 st.session_state.expert_time = datetime.now().strftime("%H:%M:%S")
         else:
             st.warning("Please enter a topic first.")
