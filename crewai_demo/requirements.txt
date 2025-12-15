@@ -5,3 +5,8 @@ crewai-tools
 langchain-google-community[gmail]
 chromadb
 pymupdf
+beautifulsoup4
+requests
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2

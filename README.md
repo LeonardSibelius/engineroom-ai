@@ -41,6 +41,8 @@ engineroom/
 │   ├── email_reply_agent.py # Email reply agent
 │   ├── hello_crew.py       # Basic CrewAI test
 │   ├── setup_gmail_token.py # Gmail OAuth setup
+│   ├── setup_drive_token.py # Google Drive OAuth setup (book backup/sync)
+│   ├── ingest_books.py     # Build knowledge base from PDFs (local or Drive)
 │   ├── .env                # API key (gitignored)
 │   └── token.json          # Gmail token (gitignored)
 ├── images/                 # Site assets
@@ -50,7 +52,30 @@ engineroom/
 ## Security
 - API keys stored in local `.env` file (never pushed to GitHub)
 - Gmail OAuth tokens stay local
+- Drive OAuth tokens stay local
 - Email reply agent has security filters blocking scams, phishing, automated senders
+
+## Google Drive (Book Backup + Sync)
+If your PC is unreliable, you can keep your PDFs in a Drive folder and have the project download them before ingesting.
+
+### 1) Create Drive OAuth token (one-time per PC)
+```powershell
+cd C:\engineroom\crewai_demo
+python setup_drive_token.py
+```
+This creates `token_drive.json` (gitignored).
+
+### 2) Get your Drive folder ID
+In Google Drive (web), open the folder that contains your PDFs and copy the URL.
+It looks like:
+`https://drive.google.com/drive/folders/<FOLDER_ID>`
+
+### 3) Sync PDFs + ingest
+```powershell
+cd C:\engineroom\crewai_demo
+python ingest_books.py --sync-drive --drive-folder-id "<FOLDER_ID>"
+```
+Drive PDFs will download into `crewai_demo/books/_drive/` and then the knowledge base will rebuild in `crewai_demo/knowledge_db/`.
 
 ## Created
 December 2025

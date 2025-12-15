@@ -44,12 +44,29 @@ git push
 - `crewai_demo/.env` - Google API key
 - `crewai_demo/token.json` - Gmail OAuth token
 - `crewai_demo/credentials.json` - Gmail OAuth app credentials
+- `crewai_demo/token_drive.json` - Google Drive OAuth token (book sync)
 
 If you set up on a new computer, you'll need to:
 1. Create new `.env` with your API key
 2. Run `python setup_gmail_token.py` to re-authenticate Gmail
+3. Run `python setup_drive_token.py` to re-authenticate Drive (optional)
 
 ---
+
+## Google Drive Book Backup (Recommended)
+
+If your PC is acting up, treat Google Drive as the canonical “books library”:
+
+1. Upload PDFs to a Drive folder
+2. Copy the folder URL (it contains `/folders/<FOLDER_ID>`)
+3. Ingest from Drive (downloads PDFs first):
+
+```powershell
+cd C:\engineroom\crewai_demo
+python ingest_books.py --sync-drive --drive-folder-id "<FOLDER_ID>"
+```
+
+You can also do it from the Streamlit dashboard sidebar: **Google Drive Books → “Sync PDFs from Drive + Ingest”**.
 
 ## Reminders
 

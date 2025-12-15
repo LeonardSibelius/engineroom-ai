@@ -153,14 +153,21 @@ def check_gmail_token():
     """Check if Gmail token exists."""
     return os.path.exists("token.json")
 
+def check_drive_token():
+    """Check if Google Drive token exists."""
+    return os.path.exists("token_drive.json")
+
 def run_agent(script_name: str, args: list = None) -> str:
     """Run an agent script and capture output."""
-    if not check_api_key():
+    # Only some scripts require the Gemini API key.
+    requires_api_key = script_name in {"email_agent.py", "email_reply_agent.py", "topic_expert_agent.py"}
+    if requires_api_key and not check_api_key():
         return "ERROR: API key not configured. Please enter it in the sidebar."
     
     env = os.environ.copy()
-    env["GOOGLE_API_KEY"] = st.session_state.api_key
-    env["GEMINI_API_KEY"] = st.session_state.api_key
+    if requires_api_key:
+        env["GOOGLE_API_KEY"] = st.session_state.api_key
+        env["GEMINI_API_KEY"] = st.session_state.api_key
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONLEGACYWINDOWSSTDIO"] = "1"
     
@@ -215,7 +222,7 @@ def run_agent(script_name: str, args: list = None) -> str:
         
         return output.strip() if output.strip() else "Agent completed with no output."
     except subprocess.TimeoutExpired:
-        return "ERROR: Agent timed out after 2 minutes."
+        return "ERROR: Agent timed out after 10 minutes."
     except Exception as e:
         return f"ERROR: {str(e)}"
 
@@ -263,6 +270,13 @@ with st.sidebar:
     else:
         st.markdown("❌ **Gmail:** Not authenticated")
         st.caption("Run `python setup_gmail_token.py` in terminal")
+
+    # Drive token status
+    if check_drive_token():
+        st.markdown("✅ **Drive:** Authenticated")
+    else:
+        st.markdown("❌ **Drive:** Not authenticated")
+        st.caption("Run `python setup_drive_token.py` in terminal")
     
     # Knowledge base status
     knowledge_db = Path(__file__).parent / "knowledge_db"
@@ -270,7 +284,55 @@ with st.sidebar:
         st.markdown("✅ **Knowledge Base:** Ready")
     else:
         st.markdown("⚠️ **Knowledge Base:** Not built")
-        st.caption("Run `python ingest_books.py` in terminal")
+        st.caption("Run `python ingest_books.py` (or use Drive sync below)")
+
+    st.markdown("---")
+    st.markdown("### ☁️ Google Drive Books")
+    drive_folder_id = st.text_input(
+        "Drive Folder ID (PDFs)",
+        value=st.session_state.get("drive_folder_id", os.environ.get("DRIVE_FOLDER_ID", "")),
+        help="Paste the folder ID from a Drive folder link. Example link contains: /folders/<ID>"
+    )
+    if drive_folder_id:
+        st.session_state.drive_folder_id = drive_folder_id
+
+    if st.button("⬇️ Sync PDFs from Drive + Ingest", use_container_width=True):
+        if not check_drive_token():
+            st.error("Drive is not authenticated. Run `python setup_drive_token.py` first.")
+        elif not drive_folder_id:
+            st.error("Please paste a Drive Folder ID first.")
+        else:
+            with st.spinner("Syncing PDFs from Drive and rebuilding knowledge base..."):
+                st.session_state.ingest_output = run_agent(
+                    "ingest_books.py",
+                    ["--sync-drive", "--drive-folder-id", drive_folder_id],
+                )
+                st.session_state.ingest_time = datetime.now().strftime("%H:%M:%S")
+    
+    st.markdown("---")
+    
+    # Web Article Ingestion
+    st.markdown("### 📰 Add Web Article")
+    article_url = st.text_input(
+        "Article URL",
+        value="",
+        placeholder="https://example.com/article",
+        help="Paste a news article URL to add it to your knowledge base"
+    )
+    
+    if st.button("📥 Add Article to Knowledge Base", use_container_width=True):
+        if not article_url:
+            st.error("Please paste an article URL first.")
+        elif not article_url.startswith("http"):
+            st.error("Please enter a valid URL starting with http:// or https://")
+        else:
+            with st.spinner("Fetching and indexing article..."):
+                st.session_state.article_output = run_agent(
+                    "ingest_books.py",
+                    ["--add-article", article_url],
+                )
+                st.session_state.article_time = datetime.now().strftime("%H:%M:%S")
+                st.success("Article added! Check 'Article Output' tab.")
     
     st.markdown("---")
     
@@ -362,7 +424,7 @@ st.markdown("---")
 st.markdown("### 📟 Agent Output")
 
 # Tabs for different outputs
-tab1, tab2, tab3 = st.tabs(["📨 Reader Output", "✉️ Replier Output", "📚 Expert Output"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📨 Reader Output", "✉️ Replier Output", "📚 Expert Output", "☁️ Ingestion Output", "📰 Article Output"])
 
 with tab1:
     if "reader_output" in st.session_state:
@@ -387,6 +449,22 @@ with tab3:
                    unsafe_allow_html=True)
     else:
         st.info("Enter a topic and click 'Research Topic' to see output here.")
+
+with tab4:
+    if "ingest_output" in st.session_state:
+        st.caption(f"Last run: {st.session_state.get('ingest_time', 'Unknown')}")
+        st.markdown(f'<div class="terminal-output">{st.session_state.ingest_output}</div>',
+                   unsafe_allow_html=True)
+    else:
+        st.info("Use the sidebar button 'Sync PDFs from Drive + Ingest' to rebuild the knowledge base.")
+
+with tab5:
+    if "article_output" in st.session_state:
+        st.caption(f"Last run: {st.session_state.get('article_time', 'Unknown')}")
+        st.markdown(f'<div class="terminal-output">{st.session_state.article_output}</div>',
+                   unsafe_allow_html=True)
+    else:
+        st.info("Use the sidebar to add a web article URL to your knowledge base.")
 
 # Footer
 st.markdown("---")
