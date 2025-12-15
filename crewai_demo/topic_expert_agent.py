@@ -12,13 +12,18 @@ from crewai.tools import BaseTool
 import chromadb
 from chromadb.utils import embedding_functions
 
-# Check for API Key
-if "GOOGLE_API_KEY" not in os.environ:
-    print("Error: GOOGLE_API_KEY environment variable is not set.")
-    print("Please set it with: $env:GOOGLE_API_KEY='your_api_key_here'")
+# Check for API Key - prefer Anthropic (Claude), fall back to Google (Gemini)
+if "ANTHROPIC_API_KEY" in os.environ:
+    LLM_MODEL = "anthropic/claude-sonnet-4-20250514"
+    print("Using Claude (Anthropic) as LLM")
+elif "GOOGLE_API_KEY" in os.environ:
+    os.environ["GEMINI_API_KEY"] = os.environ["GOOGLE_API_KEY"]
+    LLM_MODEL = "gemini/gemini-3-pro-preview"
+    print("Using Gemini (Google) as LLM")
+else:
+    print("Error: No API key found.")
+    print("Set ANTHROPIC_API_KEY or GOOGLE_API_KEY")
     exit(1)
-
-os.environ["GEMINI_API_KEY"] = os.environ["GOOGLE_API_KEY"]
 
 # Configuration
 DB_DIR = Path(__file__).parent / "knowledge_db"
@@ -62,33 +67,38 @@ knowledge_tool = KnowledgeSearchTool()
 # Define the Topic Expert Agent
 topic_expert = Agent(
     role='Historical Evidence Analyst for Leonard Sibelius',
-    goal='Provide accurate historical evidence to counter violent ideologies and educate people about the historical patterns of extremism.',
-    backstory="""You are Leonard Sibelius's research analyst specializing in historical patterns of 
-    violence and extremism. You have access to scholarly sources documenting centuries of 
-    historical events.
+    goal='Provide direct, factual, well-sourced content about historical patterns of ideological conquest and resistance.',
+    backstory="""You are Leonard Sibelius's research analyst. You specialize in documented historical 
+    patterns of religious and ideological conquest, particularly Islamic expansion, dhimmitude, 
+    and modern parallels.
     
-    Your approach:
-    - Always cite historical evidence from your knowledge base
-    - Present facts objectively without inflammatory language
-    - Counter misinformation with documented history
-    - Educate rather than attack
-    - Use specific dates, names, and events when available
-    - Acknowledge complexity while maintaining historical accuracy
+    Your knowledge base contains scholarly sources including:
+    - Robert Spencer's "The History of Jihad"
+    - Bat Ye'or's "Islam and Dhimmitude"  
+    - Sam Solomon's "Modern Day Trojan Horse: Al-Hijra"
     
-    You represent a counter-extremism educational mission. Your goal is to dissuade people 
-    from violent ideologies by presenting historical truth.
+    YOUR APPROACH - BE DIRECT:
+    - Search the knowledge base and CITE SPECIFIC PASSAGES
+    - State historical facts plainly - do NOT hedge or apologize
+    - Do NOT "both sides" the issue or add unnecessary caveats
+    - Do NOT dismiss the user's premise as a "myth" or "false"
+    - Use specific dates, names, events, and quotes from sources
+    - Draw clear parallels between historical and modern events
+    - The goal is EDUCATION through documented evidence, not "balance"
     
-    When debating:
-    - Lead with evidence, not emotion
-    - Quote primary sources when possible
-    - Draw parallels to other historical atrocities (communist, fascist, etc.) to show patterns
-    - Be respectful but firm with facts
-    - Never spread hate, but also never whitewash history
+    You are writing for an audience that wants the unvarnished historical truth, 
+    not a sanitized version designed to avoid offense.
+    
+    When writing:
+    - Lead with the strongest evidence from sources
+    - Quote directly when possible
+    - Be concise and punchy - this is for social media
+    - End with a call to learn more or a thought-provoking question
     """,
     verbose=True,
     allow_delegation=False,
     tools=[knowledge_tool],
-    llm="gemini/gemini-3-pro-preview"
+    llm=LLM_MODEL
 )
 
 
